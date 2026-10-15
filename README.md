@@ -1,10 +1,33 @@
-# Wijlhuizen Transportkoeling selector
+# Wijlhuizen Onderdelenzoeker
 
-Online selectietool die de papieren catalogus *Transportkoeling (editie 48)* vervangt.
-Kies **merk → type koelunit** en zie direct de passende onderhoudspakketten, filterpakketten,
-losse filters/riemen en overige onderdelen, met Wijlhuizen-artikelnummers, foto's en een link naar de webshop.
+Online selectietool die de papieren catalogi vervangt. Eén tool, één zoekbalk over alle catalogi:
 
-## Wat zit erin
+- **Transportkoeling (editie 48)**: kies *merk → type koelunit* en zie de passende onderhouds- en filterpakketten,
+  losse filters/riemen en overige onderdelen.
+- **Trailerbouwdelen (2017)**: zoekboom *hoofdgroep → groep → subgroep (→ productlijn) → product*, met foto,
+  maattekening, alle uitvoeringen en artikelnummers.
+
+Overal met Wijlhuizen-artikelnummers, kopieerknop en link naar de webshop. Geen prijzen.
+
+## Trailerbouwdelen
+
+| | |
+|---|---|
+| Hoofdgroepen | 1 Hang- en sluitwerk · 2 Bovenbouw · 3 Onderbouw |
+| Productgroepen | 24 groepen, 91 subgroepen (zoals in de inhoudsopgave van de catalogus) |
+| Producten | 1.804 productblokken met 4.756 artikelregels (4.078 unieke artikelnummers) |
+| Afbeeldingen | ~2.000 foto's en maattekeningen (WebP) |
+
+- Zijbalk met de volledige boom; op telefoon inklapbaar.
+- Subgroepen met productlijnen (bijv. Edscha Ultraline II, Kinnegrip K20, Roweko kisten) hebben filterknoppen.
+- Zoeken op artikelnummer opent het product en markeert de juiste regel in de tabel.
+- Bij elk product staat het catalogus-paginanummer, handig bij twijfel.
+
+Controle: van de 4.765 artikelnummers in de PDF worden er 4.757 automatisch uitgelezen. Niet meegenomen
+(staan los van een tabel in de PDF): 51.01.0592/0593 (blz. 159–160), 51.17.0001 (blz. 233), 51.08.0524/0567 (blz. 370),
+51.05.0048 (blz. 461). Die kunnen handmatig in `data/trailerbouw.json` worden toegevoegd.
+
+## Transportkoeling
 
 | | |
 |---|---|
@@ -37,6 +60,7 @@ Direct bij een merk, type of categorie beginnen kan met `data-start`, bijvoorbee
 
 ```html
 <div id="wijlhuizen-transportkoeling" data-start="#/merk/thermoking"></div>
+<div id="wijlhuizen-transportkoeling" data-start="#/trailer"></div>   <!-- direct trailerbouwdelen -->
 ```
 
 Alternatief zonder script: `<iframe src="https://<adres-van-de-tool>/" style="width:100%;height:1200px;border:0"></iframe>`.
@@ -52,6 +76,8 @@ Elke pagina heeft een eigen link die je kunt delen of in de webshop kunt plaatse
 - `#/zoek?q=46.51391` – zoekresultaat
 - `#/onderdelen/filters` – categorie
 - `#/koudemiddel` – koudemiddeltabel
+- `#/trailer` – trailerbouwdelen, `#/trailer/g/2.3` (groep), `#/trailer/s/1.1.1` (subgroep), `#/trailer/p/51.02.0350` (product)
+- `#/koeling` – startpagina transportkoeling
 
 ## Hosten
 
@@ -77,7 +103,14 @@ pdftotext -f 71 -l 71 -layout catalogus.pdf /tmp/tk/p71.txt  # koudemiddeltabel
 python3 tools/build_data.py /tmp/tk                          # -> data/catalogus.json + img/
 ```
 
-Handmatige correcties staan in `tools/build_data.py` (zoek op `CORRECTIE`). Kleine wijzigingen
+Handmatige correcties staan in `tools/build_data.py` (zoek op `CORRECTIE`).
+
+Trailerbouwdelen:
+
+```bash
+python3 tools/extract_trailerbouw.py trailerbouwdelen.pdf /tmp/tb   # blokken, tabellen, afbeeldingen
+python3 tools/build_trailerbouw.py /tmp/tb                          # -> data/trailerbouw.json + img/tb/
+``` Kleine wijzigingen
 (artikel toevoegen, omschrijving aanpassen) kunnen ook direct in `data/catalogus.json`.
 
 ### Opvallend in de bron-catalogus

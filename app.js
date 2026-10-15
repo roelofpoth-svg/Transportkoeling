@@ -69,6 +69,8 @@
 
   /* ---------- weergave-onderdelen ---------- */
   function setCrumbs(list) {
+    if (list[0] && list[0][0] === 'Transportkoeling') list = [['Catalogus', '#/'], ['Transportkoeling', '#/koeling'], ...list.slice(1)];
+    else if (list[0] && list[0][0] !== 'Catalogus') list = [['Catalogus', '#/'], ...list];
     crumbs.innerHTML = list.map((c, i) => (i < list.length - 1 && c[1]
       ? `<a href="${c[1]}">${esc(c[0])}</a><span class="sep">›</span>` : `<span>${esc(c[0])}</span>`)).join('');
   }
@@ -139,6 +141,30 @@
   }
 
   /* ---------- pagina's ---------- */
+  function pageCatalogs() {
+    setCrumbs([['Catalogus']]);
+    const tb = window.TB && window.TB.stats();
+    app.innerHTML = `
+      <h1>Welke onderdelen zoek je?</h1>
+      <p class="lead">Kies een catalogus, of zoek direct op artikelnummer, type of omschrijving in alle catalogi via de zoekbalk bovenaan.</p>
+      <div class="grid catalogs">
+        <a class="card catalog" href="#/koeling">
+          <div class="cat-kicker">Catalogus</div>
+          <div class="make-name">Transportkoeling</div>
+          <p class="make-series">Onderhouds- en filterpakketten, filters, riemen en onderdelen voor Carrier Transicold, Thermo King en Schmitz. Zoek per merk en type koelunit.</p>
+          <p class="cat-stats">${D.models.length} types · ${D.packages.length} pakketten · ${D.parts.length} onderdelen</p>
+          <span class="make-go">Naar transportkoeling ›</span>
+        </a>
+        <a class="card catalog" href="#/trailer">
+          <div class="cat-kicker">Catalogus</div>
+          <div class="make-name">Trailerbouwdelen</div>
+          <p class="make-series">Hang- en sluitwerk, bovenbouw en onderbouw: scharnieren, sluitingen, ladingzekering, schuifzeilen en -daken, rongen, markering, spatschermen, kisten en meer.</p>
+          <p class="cat-stats">${tb ? `${tb.subs} productgroepen · ${tb.products} producten · ${tb.articles} artikelnummers` : 'Laden…'}</p>
+          <span class="make-go">Naar trailerbouwdelen ›</span>
+        </a>
+      </div>`;
+  }
+
   function pageHome() {
     setCrumbs([['Transportkoeling']]);
     const makes = D.makes.map((mk) => {
@@ -344,6 +370,7 @@
     const words = nq.split(/\s+/).filter(Boolean);
     const hit = (text) => { const t = norm(text); return words.every((w) => t.includes(w)) || compact(text).includes(cq); };
     const res = [];
+    if (window.TB) res.push(...window.TB.search(q));
     D.models.forEach((m) => { if (hit(m.name) || hit(makeName(m.make) + ' ' + m.name)) res.push({ score: compact(m.name) === cq ? 100 : 80, kind: 'Type', title: m.name, sub: makeName(m.make), href: modelUrl(m) }); });
     D.packages.forEach((p) => {
       const artHit = compact(p.artnr).includes(cq);
@@ -375,7 +402,7 @@
   }
 
   function pageSearch(q) {
-    setCrumbs([['Transportkoeling', '#/'], [`Zoeken: ${q}`]]);
+    setCrumbs([[`Zoeken: ${q}`]]);
     searchInput.value = q;
     const res = search(q);
     // precies één artikelnummer of type gevonden? direct openen
@@ -383,11 +410,12 @@
       <div class="results">${res.slice(0, 150).map((r) => `<a class="card result" href="${r.href}">
         ${r.img ? img(r.img, r.title) : '<span></span>'}
         <div><div class="r-kind">${esc(r.kind)}</div><div class="r-title">${mark(r.title, q)}</div><div class="r-sub">${mark(r.sub, q)}</div></div>
-      </a>`).join('') || `<div class="empty">Niets gevonden. Probeer een deel van het typenummer (bijv. “SUPRA 950” of “SL-400”) of een artikelnummer zonder puntjes.</div>`}</div>`;
+      </a>`).join('') || `<div class="empty">Niets gevonden. Probeer een deel van het typenummer (bijv. “SUPRA 950” of “SL-400”), een omschrijving (bijv. “scharnier”) of een artikelnummer zonder puntjes.</div>`}</div>
+      ${res.length > 150 ? `<p class="lead" style="margin-top:12px">De eerste 150 resultaten worden getoond. Maak je zoekopdracht specifieker.</p>` : ''}`;
   }
 
   function pageNotFound() {
-    setCrumbs([['Transportkoeling', '#/'], ['Niet gevonden']]);
+    setCrumbs([['Niet gevonden']]);
     app.innerHTML = `<div class="empty"><h1>Niet gevonden</h1><p>Deze pagina bestaat niet (meer). <a href="#/">Terug naar het begin</a>.</p></div>`;
   }
 
@@ -398,7 +426,9 @@
     const params = new URLSearchParams(qs || '');
     const seg = path.split('/').map((s) => decodeURIComponent(s));
     switch (seg[0]) {
-      case '': pageHome(); break;
+      case '': pageCatalogs(); break;
+      case 'koeling': pageHome(); break;
+      case 'trailer': if (window.TB) window.TB.route(seg.slice(1), params); else pageNotFound(); break;
       case 'merk': pageMake(seg[1], seg[2]); break;
       case 'merk-onderdelen': pageMakeParts(seg[1]); break;
       case 'type': pageModel(seg[1]); break;
@@ -452,9 +482,12 @@
     window.addEventListener('load', send);
   }
 
+  // gedeelde hulpfuncties voor andere catalogusmodules (trailerbouw.js)
+  window.TKH = { esc, enc, norm, compact, natural, img, copyBtn, webshopLink, setCrumbs, mark, app, ICON, notFound: () => pageNotFound() };
+
   window.addEventListener('hashchange', route);
-  fetch('data/catalogus.json')
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then((d) => { D = d; indexData(); route(); })
+  const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  Promise.all([getJson('data/catalogus.json'), getJson('data/trailerbouw.json').catch(() => null)])
+    .then(([d, tb]) => { D = d; indexData(); if (tb && window.TB) window.TB.init(tb); route(); })
     .catch(() => { app.innerHTML = '<div class="empty">De catalogus kon niet worden geladen. Probeer het later opnieuw.</div>'; });
 })();
