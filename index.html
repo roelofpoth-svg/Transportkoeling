@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transportkoeling selector | Wijlhuizen</title>
+  <meta name="description" content="Zoek onderhoudspakketten, filters, riemen en onderdelen voor Carrier Transicold, Thermo King en Schmitz koelunits.">
+  <link rel="icon" href="assets/beeldmerk.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Naar startpagina">
+      <img src="assets/wijlhuizen-logo.png" alt="Wijlhuizen B.V. Truck &amp; Trailerdelen" class="brand-logo">
+    </a>
+    <div class="topbar-title">
+      <span class="topbar-kicker">Selectietool</span>
+      <span class="topbar-name">Transportkoeling</span>
+    </div>
+    <form class="search" id="search" role="search">
+      <label class="sr-only" for="q">Zoek op type, artikelnummer of omschrijving</label>
+      <input id="q" name="q" type="search" autocomplete="off" placeholder="Zoek type, artikelnr. of onderdeel…">
+      <button type="submit" aria-label="Zoeken"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M10 2a8 8 0 0 1 6.32 12.9l5.39 5.4-1.42 1.4-5.39-5.38A8 8 0 1 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/></svg></button>
+    </form>
+  </header>
+  <nav class="crumbs" id="crumbs" aria-label="Kruimelpad"></nav>
+  <main id="app" tabindex="-1"><p class="loading">Catalogus laden…</p></main>
+  <footer class="foot">
+    <span>Wijlhuizen B.V. Truck &amp; Trailerdelen</span>
+    <a href="#/koudemiddel">Koudemiddel volumes</a>
+    <a href="#/onderdelen">Alle onderdelen</a>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
