@@ -143,25 +143,21 @@
   /* ---------- pagina's ---------- */
   function pageCatalogs() {
     setCrumbs([['Catalogus']]);
-    const tb = window.TB && window.TB.stats();
+    const cats = window.CAT ? window.CAT.index() : [];
+    const card = (href, name, desc, stats, pic) => `<a class="card catalog" href="${href}">
+        ${pic ? `<div class="cat-img">${img(pic, name)}</div>` : ''}
+        <div class="cat-kicker">Catalogus</div>
+        <div class="make-name">${esc(name)}</div>
+        <p class="make-series">${esc(desc)}</p>
+        <p class="cat-stats">${stats}</p>
+      </a>`;
     app.innerHTML = `
       <h1>Welke onderdelen zoek je?</h1>
-      <p class="lead">Kies een catalogus, of zoek direct op artikelnummer, type of omschrijving in alle catalogi via de zoekbalk bovenaan.</p>
+      <p class="lead">Kies een catalogus, of zoek direct op artikelnummer, OE-nummer, type of omschrijving in alle ${cats.length + 1} catalogi via de zoekbalk bovenaan.</p>
       <div class="grid catalogs">
-        <a class="card catalog" href="#/koeling">
-          <div class="cat-kicker">Catalogus</div>
-          <div class="make-name">Transportkoeling</div>
-          <p class="make-series">Onderhouds- en filterpakketten, filters, riemen en onderdelen voor Carrier Transicold, Thermo King en Schmitz. Zoek per merk en type koelunit.</p>
-          <p class="cat-stats">${D.models.length} types · ${D.packages.length} pakketten · ${D.parts.length} onderdelen</p>
-          <span class="make-go">Naar transportkoeling ›</span>
-        </a>
-        <a class="card catalog" href="#/trailer">
-          <div class="cat-kicker">Catalogus</div>
-          <div class="make-name">Trailerbouwdelen</div>
-          <p class="make-series">Hang- en sluitwerk, bovenbouw en onderbouw: scharnieren, sluitingen, ladingzekering, schuifzeilen en -daken, rongen, markering, spatschermen, kisten en meer.</p>
-          <p class="cat-stats">${tb ? `${tb.subs} productgroepen · ${tb.products} producten · ${tb.articles} artikelnummers` : 'Laden…'}</p>
-          <span class="make-go">Naar trailerbouwdelen ›</span>
-        </a>
+        ${card('#/koeling', 'Transportkoeling', 'Onderhouds- en filterpakketten, filters, riemen en onderdelen voor Carrier Transicold, Thermo King en Schmitz. Zoek per merk en type koelunit.',
+          `${D.models.length} types · ${D.packages.length} pakketten · ${D.parts.length} onderdelen`, D.packages[0] && D.packages[0].img)}
+        ${cats.map((c) => card(`#/c/${c.id}`, c.name, c.desc, `${c.groups} groepen · ${c.products.toLocaleString('nl-NL')} producten · ${c.articles.toLocaleString('nl-NL')} artikelnummers`, c.img)).join('')}
       </div>`;
   }
 
@@ -370,7 +366,7 @@
     const words = nq.split(/\s+/).filter(Boolean);
     const hit = (text) => { const t = norm(text); return words.every((w) => t.includes(w)) || compact(text).includes(cq); };
     const res = [];
-    if (window.TB) res.push(...window.TB.search(q));
+    if (window.CAT) res.push(...window.CAT.searchLoaded(q));
     D.models.forEach((m) => { if (hit(m.name) || hit(makeName(m.make) + ' ' + m.name)) res.push({ score: compact(m.name) === cq ? 100 : 80, kind: 'Type', title: m.name, sub: makeName(m.make), href: modelUrl(m) }); });
     D.packages.forEach((p) => {
       const artHit = compact(p.artnr).includes(cq);
@@ -404,6 +400,11 @@
   function pageSearch(q) {
     setCrumbs([[`Zoeken: ${q}`]]);
     searchInput.value = q;
+    if (window.CAT && !window.CAT.isLoaded()) {
+      app.innerHTML = '<p class="loading">Alle catalogi doorzoeken…</p>';
+      window.CAT.ensureAll().then(() => { if (location.hash.startsWith('#/zoek')) pageSearch(q); });
+      return;
+    }
     const res = search(q);
     // precies één artikelnummer of type gevonden? direct openen
     app.innerHTML = `<h1>Zoekresultaten</h1><p class="lead">${res.length} resultaten voor “${esc(q)}”</p>
@@ -428,7 +429,8 @@
     switch (seg[0]) {
       case '': pageCatalogs(); break;
       case 'koeling': pageHome(); break;
-      case 'trailer': if (window.TB) window.TB.route(seg.slice(1), params); else pageNotFound(); break;
+      case 'trailer': window.CAT.legacyTrailer(seg.slice(1), params); break;
+      case 'c': window.CAT.route(seg.slice(1), params); break;
       case 'merk': pageMake(seg[1], seg[2]); break;
       case 'merk-onderdelen': pageMakeParts(seg[1]); break;
       case 'type': pageModel(seg[1]); break;
@@ -452,9 +454,13 @@
     e.preventDefault();
     const q = searchInput.value.trim();
     if (!q) return;
-    const res = search(q);
-    const exact = res.filter((r) => r.score >= 85 && (compact(r.art || '') === compact(q) || compact(r.title) === compact(q)));
-    location.hash = exact.length === 1 ? exact[0].href : `#/zoek?q=${enc(q)}`;
+    const go = () => {
+      const res = search(q);
+      const exact = res.filter((r) => r.score >= 85 && (compact(r.art || '') === compact(q) || compact(r.title) === compact(q)));
+      const uniq = [...new Set(exact.map((r) => r.href))];
+      location.hash = uniq.length === 1 ? uniq[0] : `#/zoek?q=${enc(q)}`;
+    };
+    if (window.CAT && !window.CAT.isLoaded()) { app.innerHTML = '<p class="loading">Alle catalogi doorzoeken…</p>'; window.CAT.ensureAll().then(go); } else go();
   });
 
   document.addEventListener('click', (e) => {
@@ -482,13 +488,13 @@
     window.addEventListener('load', send);
   }
 
-  // gedeelde hulpfuncties voor andere catalogusmodules (trailerbouw.js)
+  // gedeelde hulpfuncties voor de catalogusmodule (catalogi.js)
   window.TKH = { esc, enc, norm, compact, natural, img, copyBtn, webshopLink, setCrumbs, mark, app, ICON, notFound: () => pageNotFound() };
 
   window.addEventListener('hashchange', route);
   const V = (document.querySelector('script[src*="app.js"]').src.split('v=')[1] || '');
   const getJson = (u) => fetch(u + (V ? '?v=' + V : '')).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
-  Promise.all([getJson('data/catalogus.json'), getJson('data/trailerbouw.json').catch(() => null)])
-    .then(([d, tb]) => { D = d; indexData(); if (tb && window.TB) window.TB.init(tb); route(); })
+  Promise.all([getJson('data/catalogus.json'), getJson('data/catalogi.json').catch(() => [])])
+    .then(([d, cats]) => { D = d; indexData(); window.CAT.init(cats, V); route(); })
     .catch(() => { app.innerHTML = '<div class="empty">De catalogus kon niet worden geladen. Probeer het later opnieuw.</div>'; });
 })();

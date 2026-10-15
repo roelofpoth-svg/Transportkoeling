@@ -1,0 +1,280 @@
+[
+ {
+  "id": "trailerbouw",
+  "name": "Trailerbouwdelen",
+  "desc": "Hang- en sluitwerk, bovenbouw en onderbouw: scharnieren, sluitingen, ladingzekering, schuifzeilen en -daken, rongen, markering, spatschermen, kisten en meer.",
+  "products": 1790,
+  "articles": 4078,
+  "groups": 3,
+  "img": "img/tb/x63.webp",
+  "top": [
+   "1 Hang- en sluitwerk",
+   "2 Bovenbouw",
+   "3 Onderbouw"
+  ]
+ },
+ {
+  "id": "koelingsdelen",
+  "name": "Koelingsdelen truck",
+  "desc": "Radiateurs, intercoolers, waterpompen, riemen, filters en aircodelen per merk en type truck.",
+  "products": 895,
+  "articles": 1743,
+  "groups": 9,
+  "img": "img/c/koelingsdelen/r3_3_392.webp",
+  "top": [
+   "DAF",
+   "Ginaf",
+   "Iveco",
+   "MAN",
+   "Mercedes",
+   "Renault",
+   "Scania",
+   "Volkswagen",
+   "Volvo"
+  ]
+ },
+ {
+  "id": "truckschadedelen",
+  "name": "Truckschadedelen",
+  "desc": "Verlichting, spiegels, carrosseriedelen en accessoires per merk en type truck.",
+  "products": 912,
+  "articles": 2463,
+  "groups": 7,
+  "img": "img/c/truckschadedelen/x3067.webp",
+  "top": [
+   "DAF",
+   "Iveco",
+   "MAN",
+   "Mercedes",
+   "Renault",
+   "Scania",
+   "Volvo"
+  ]
+ },
+ {
+  "id": "scania-pgr",
+  "name": "Scania P/G/R-serie",
+  "desc": "Onderdelen voor Scania P-, G- en R-serie: motor, koeling, remmen, cabine, carrosserie en meer.",
+  "products": 638,
+  "articles": 2989,
+  "groups": 17,
+  "img": "img/c/scania-pgr/x412.webp",
+  "top": [
+   "Brandstofsysteem",
+   "Aandrijving",
+   "Ophanging & vering",
+   "Uitlaatsysteem",
+   "Naven & wielen",
+   "Remdelen",
+   "Motorbediening",
+   "Koelsysteem",
+   "Koppelingbediening",
+   "Versnellingsbakbediening",
+   "Stuurinrichting",
+   "Cabine",
+   "Carrosserie",
+   "Luchtremsysteem"
+  ]
+ },
+ {
+  "id": "verlichting",
+  "name": "Verlichting",
+  "desc": "Markerings-, achter-, knipper-, werk- en koplampen voor truck en trailer.",
+  "products": 3004,
+  "articles": 8478,
+  "groups": 26,
+  "img": "img/c/verlichting/x334.webp",
+  "top": [
+   "Markeringslampen",
+   "Pendellampen",
+   "Achterlampen",
+   "Knipperlampen",
+   "Mistlampen",
+   "Achteruitrijlampen & -alarmen",
+   "Hulpremlampen",
+   "Kentekenlampen",
+   "Binnenverlichting",
+   "Kabelsets & connectoren",
+   "Koplampen",
+   "Verstralers & mistlampen",
+   "Dagrijverlichting",
+   "Interieurverlichting"
+  ]
+ },
+ {
+  "id": "elektra",
+  "name": "Elektra & installatie",
+  "desc": "Kabels, spiralen, stekkers, connectoren, zekeringen, schakelaars en installatiemateriaal.",
+  "products": 1372,
+  "articles": 3403,
+  "groups": 15,
+  "img": "img/c/elektra/r4_3_136.webp",
+  "top": [
+   "Kabels",
+   "Electrospiralen",
+   "Stekkers & stekkerdozen",
+   "Kabelschoenen",
+   "Connectors",
+   "Verbindingsdozen",
+   "Zekeringen & houders",
+   "Relais & toebehoren",
+   "Schakelaars",
+   "Omvormers",
+   "Accu toebehoren",
+   "Krimpkousen & spiraalbuizen",
+   "Kleefzadels & bundelbanden",
+   "Gereedschappen"
+  ]
+ },
+ {
+  "id": "luchtremkoppelingen",
+  "name": "Luchtremkoppelingen",
+  "desc": "Raufoss, Voss, Norgren, Legris en andere koppelingen, leidingen en luchtremdelen.",
+  "products": 875,
+  "articles": 3775,
+  "groups": 22,
+  "img": "img/c/luchtremkoppelingen/x349.webp",
+  "top": [
+   "Raufoss ABC koppelingen",
+   "Raufoss BRK / P5 koppelingen",
+   "Voss 232 koppelingen",
+   "Voss 230 koppelingen",
+   "Voss 240 koppelingen",
+   "Voss 203 koppelingen",
+   "Norgren koppelingen",
+   "Legris koppelingen",
+   "John Guest koppelingen",
+   "Rilax koppelingen",
+   "Camozzi koppelingen",
+   "Universele snijringkoppelingen",
+   "Toebehoren universele snijringkoppelingen",
+   "Assortimentsdozen"
+  ]
+ },
+ {
+  "id": "luchtbalgen",
+  "name": "Luchtbalgen",
+  "desc": "Trailer-, truck- en busbalgen met OE- en kruisverwijzingen.",
+  "products": 611,
+  "articles": 486,
+  "groups": 5,
+  "img": "img/c/luchtbalgen/r3_4_301.webp",
+  "top": [
+   "Trailerbalgen",
+   "Truckbalgen",
+   "Veersystemen",
+   "Balgen specials",
+   "Busbalgen"
+  ]
+ },
+ {
+  "id": "aanhanger-asdelen",
+  "name": "Aanhanger- & trailerasdelen",
+  "desc": "Rem- en asdelen voor BPW, SAF, Meritor, Gigant, Schmitz, SMB en meer.",
+  "products": 322,
+  "articles": 2617,
+  "groups": 12,
+  "img": "img/c/aanhanger-asdelen/h5_0.webp",
+  "top": [
+   "BPW",
+   "Gigant",
+   "Kögel Trax",
+   "Mercedes-Benz",
+   "Meritor",
+   "SAF",
+   "Schmitz Rotos",
+   "SMB",
+   "Valx",
+   "Fruehauf",
+   "Mercedes",
+   "Vetten"
+  ]
+ },
+ {
+  "id": "voertuig-opbouw",
+  "name": "Voertuig op- & aanbouwdelen",
+  "desc": "Koppelingen, trekogen, schotels, steunpoten, wissellaadbakpoten en toebehoren.",
+  "products": 687,
+  "articles": 3496,
+  "groups": 23,
+  "img": "img/c/voertuig-opbouw/r5_8_107.webp",
+  "top": [
+   "Vangmuilkoppelingen",
+   "Dwarsbalken en schetsplaten",
+   "Rangeerkoppelingen",
+   "Afsleepstangen",
+   "Kogelkoppelingen",
+   "Triangels en toebehoren",
+   "Trekogen en toebehoren",
+   "Opleggerkoppelingen",
+   "Schuifframes",
+   "Hefschotels",
+   "Kingpinnen",
+   "Stuurwiggen",
+   "Steunpoten",
+   "Wissellaadbakpoten"
+  ]
+ },
+ {
+  "id": "laadklepdelen",
+  "name": "Laadklepdelen",
+  "desc": "Cilinders, pompen, schakelaars en onderdelen per merk laadklep.",
+  "products": 1627,
+  "articles": 2473,
+  "groups": 12,
+  "img": "img/c/laadklepdelen/x21.webp",
+  "top": [
+   "AMA",
+   "Anteo",
+   "Bär Cargolift",
+   "Behrens",
+   "Dautel",
+   "Dhollandia",
+   "Mariba",
+   "MBB-Palfinger",
+   "Ratcliff",
+   "Sörensen",
+   "Zepro",
+   "Universeel"
+  ]
+ },
+ {
+  "id": "bevestigingsmaterialen",
+  "name": "Bevestigingsmaterialen",
+  "desc": "Bouten, schroeven, moeren, ringen, klinknagels en assortimentskoffers.",
+  "products": 572,
+  "articles": 8415,
+  "groups": 12,
+  "img": "img/c/bevestigingsmaterialen/x137.webp",
+  "top": [
+   "Bouten",
+   "Schroeven",
+   "Moeren",
+   "Ringen",
+   "Klinknagels",
+   "Universele bevestigingsdelen",
+   "Zeilonderdelen",
+   "Assortimentskoffers",
+   "Magazijnstellingen",
+   "Magazijnkasten",
+   "Gereedschapsborden & -houders",
+   "Magazijnbakken"
+  ]
+ },
+ {
+  "id": "werkplaats",
+  "name": "Werkplaatsbenodigdheden",
+  "desc": "Smeermiddelen, onderhoudsproducten, lijmen, kitten, tapes en reiniging.",
+  "products": 1165,
+  "articles": 1978,
+  "groups": 5,
+  "img": "img/c/werkplaats/x6.webp",
+  "top": [
+   "Smeermiddelen, additieven & vetten",
+   "Onderhoud",
+   "Lijmen, kitten en tapes",
+   "Reiniging",
+   "Persoonlijke verzorging"
+  ]
+ }
+]

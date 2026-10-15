@@ -231,14 +231,20 @@ mark { background: #fff1b8; color: inherit; border-radius: 3px; padding: 0 1px; 
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* ---------- catalogi ---------- */
-.catalogs { grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); margin-top: 18px; }
+.catalogs { grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); margin-top: 18px; }
 .catalog { padding: 24px 24px 54px; position: relative; overflow: hidden; }
 .catalog::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--red); }
 .catalog .make-name { font: 900 28px/1.1 var(--head); color: var(--blue-deep); }
 .catalog .make-series { font-size: 14px; color: var(--muted); margin: 10px 0 0; }
+.catalog { padding-bottom: 20px; }
+.cat-img { height: 110px; display: grid; place-items: center; margin: -8px 0 12px; }
+.cat-img img { max-height: 110px; max-width: 100%; object-fit: contain; }
 .catalog .make-go { font: 800 14px/1 var(--head); color: var(--red); }
 .cat-kicker { font: 800 11px/1 var(--head); letter-spacing: .14em; text-transform: uppercase; color: var(--red); margin-bottom: 6px; }
 .cat-stats { font: 800 13px/1.3 var(--head); color: var(--blue-dark); margin: 10px 0 0; }
+.catalog { padding-bottom: 20px; }
+.cat-img { height: 110px; display: grid; place-items: center; margin: -8px 0 12px; }
+.cat-img img { max-height: 110px; max-width: 100%; object-fit: contain; }
 .catalog .make-go { position: absolute; left: 24px; bottom: 20px; right: auto; }
 
 /* ---------- trailerbouw ---------- */
@@ -283,6 +289,15 @@ mark { background: #fff1b8; color: inherit; border-radius: 3px; padding: 0 1px; 
 .tb-tables table.vt { margin-top: 8px; }
 .tb-tables tr.sec td { font: 900 13px/1 var(--head); color: var(--red); padding-top: 14px; border-bottom: 0; }
 .tb-tables tr.hl td { background: #fff1b8; }
+.row-img { width: 64px; }
+.inline-prod { margin-bottom: 26px; }
+.inline-prod .tb-detail { margin-top: 10px; }
+.row-img img { width: 60px; height: 46px; object-fit: contain; display: block; }
+.gtree > ul { list-style: none; margin: 0; padding: 0; }
+.gtree ul { padding-left: 12px; }
+.gtree li { list-style: none; }
+.gtree details > summary { display: flex; justify-content: space-between; gap: 6px; }
+.gtree > ul > li > details > summary { font-size: 14px; }
 .tb-notes { margin: 10px 0 6px; font-size: 14px; }
 .pager { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 .pager .btn { white-space: normal; text-align: left; }
