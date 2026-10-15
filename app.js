@@ -486,7 +486,8 @@
   window.TKH = { esc, enc, norm, compact, natural, img, copyBtn, webshopLink, setCrumbs, mark, app, ICON, notFound: () => pageNotFound() };
 
   window.addEventListener('hashchange', route);
-  const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  const V = (document.querySelector('script[src*="app.js"]').src.split('v=')[1] || '');
+  const getJson = (u) => fetch(u + (V ? '?v=' + V : '')).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
   Promise.all([getJson('data/catalogus.json'), getJson('data/trailerbouw.json').catch(() => null)])
     .then(([d, tb]) => { D = d; indexData(); if (tb && window.TB) window.TB.init(tb); route(); })
     .catch(() => { app.innerHTML = '<div class="empty">De catalogus kon niet worden geladen. Probeer het later opnieuw.</div>'; });

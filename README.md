@@ -117,3 +117,7 @@ python3 tools/build_trailerbouw.py /tmp/tb                          # -> data/tr
 - `51.26.0018` staat zowel bij Flappengordijn "FIX" als "Side" (laatste i.c.m. rail 51.26.0021).
 - Dichtingsring `31.11.1003` hoort bij zowel filterdroger 31.11.0002 als 31.11.0003.
 - Filterpakketten `61.01.0038` en `61.01.0039` hebben dezelfde omschrijving; ze verschillen alleen in luchtfilter.
+
+### Na een wijziging
+Hoog in `index.html` het versienummer (`?v=...`) op bij `style.css`, `config.js`, `trailerbouw.js` en `app.js`.
+Dan laden bezoekers meteen de nieuwe versie in plaats van een oude kopie uit de browsercache.
