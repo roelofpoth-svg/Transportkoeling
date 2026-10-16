@@ -5,7 +5,7 @@ window.TK_CONFIG = {
   // Link openen in nieuw tabblad (aan te raden wanneer de tool in een iframe staat)
   webshopNewTab: true,
   // Foto-zoeker (binnendienst): adres van de eigen server (Cloudflare Worker), zie README. Leeg = uit.
-  fotoZoekerApi: '',
+  fotoZoekerApi: 'https://wijlhuizen-chatbot.roelofpoth.workers.dev',
   // Het chat-rondje alleen tonen aan medewerkers die de toegangscode hebben ingevuld (via #/foto). true = altijd tonen.
   fotoZoekerAltijdTonen: false,
 };
