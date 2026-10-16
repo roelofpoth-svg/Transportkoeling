@@ -3,7 +3,7 @@
 Online selectietool die de papieren catalogi vervangt. Eén tool, één zoekbalk over alle 14 catalogi
 (zoeken op artikelnummer, OE-nummer, type of omschrijving).
 
-**Online:** https://roelofpoth-svg.github.io/Wijlhuizenonderdelenzoeker/
+**Online:** https://roelofpoth-svg.github.io/WijlhuizenOnderdelenzoeker/
 
 ## Catalogi
 
@@ -80,7 +80,7 @@ Zet deze twee regels op de pagina waar de tool moet komen:
 
 ```html
 <div id="wijlhuizen-transportkoeling"></div>
-<script src="https://roelofpoth-svg.github.io/Wijlhuizenonderdelenzoeker/embed.js" async></script>
+<script src="https://roelofpoth-svg.github.io/WijlhuizenOnderdelenzoeker/embed.js" async></script>
 ```
 
 De tool wordt als iframe geladen en groeit automatisch mee in hoogte (geen dubbele scrollbalk).
@@ -91,7 +91,7 @@ Direct bij een merk, type of categorie beginnen kan met `data-start`, bijvoorbee
 <div id="wijlhuizen-transportkoeling" data-start="#/c/verlichting"></div>   <!-- direct in één catalogus -->
 ```
 
-Alternatief zonder script: `<iframe src="https://roelofpoth-svg.github.io/Wijlhuizenonderdelenzoeker/" style="width:100%;height:1200px;border:0"></iframe>`.
+Alternatief zonder script: `<iframe src="https://roelofpoth-svg.github.io/WijlhuizenOnderdelenzoeker/" style="width:100%;height:1200px;border:0"></iframe>`.
 
 Zie `voorbeeld-embed.html` voor een werkend voorbeeld.
 
