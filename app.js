@@ -420,6 +420,48 @@
     app.innerHTML = `<div class="empty"><h1>Niet gevonden</h1><p>Deze pagina bestaat niet (meer). <a href="#/">Terug naar het begin</a>.</p></div>`;
   }
 
+  /* ---------- voor de Foto-zoeker (fotozoeker.js) ---------- */
+  // Geeft de inhoud achter een link uit de zoekresultaten als platte tekst.
+  function detailText(href, maxRows) {
+    const [path] = String(href || '').replace(/^#\/?/, '').split('?');
+    const seg = path.split('/').map(decodeURIComponent);
+    const fitsTxt = (fits) => fits.map((f) => { const m = byModel[f.model]; return (m ? `${makeName(m.make)} ${m.name}` : f.model) + (f.condition ? ` (${f.condition})` : ''); }).join('; ');
+    if (seg[0] === 'c' && seg[2] === 'p') return window.CAT.productText(seg[1], seg[3], maxRows);
+    if (seg[0] === 'onderdeel' && partById[seg[1]]) {
+      const q = partById[seg[1]];
+      return [`Catalogus: Transportkoeling`, `Groep: ${catById[q.category].name}`, `Titel: ${q.title}`, ...q.specs.map((x) => `Spec: ${x}`),
+        ...q.variants.map((v) => `- ${v.artnr}: ${[v.label, v.note].filter(Boolean).join(' | ') || q.title}`),
+        q.fits.length ? `Past op: ${fitsTxt(q.fits)}` : `Merken: ${q.makes.map(makeName).join(', ')}`].join('\n');
+    }
+    if (seg[0] === 'pakket' && pkgById[seg[1]]) {
+      const p = pkgById[seg[1]];
+      return [`Catalogus: Transportkoeling`, `${p.type} ${p.artnr} (${makeName(p.make)})`, `Past op: ${p.fitsText}`, 'Inhoud:',
+        ...p.items.map((it) => `- ${it.artnr}: ${it.name}${it.brand ? ' | ' + it.brand : ''}${it.optional ? ' | optioneel' : ''}`)].join('\n');
+    }
+    if (seg[0] === 'type' && byModel[seg[1]]) {
+      const m = byModel[seg[1]];
+      return [`Catalogus: Transportkoeling`, `Type: ${makeName(m.make)} ${m.name}`, 'Pakketten:', ...packagesFor(m.id).map((p) => `- ${p.artnr}: ${p.type}`),
+        'Onderdelen:', ...partsFor(m.id).flatMap((q) => q.variants.map((v) => `- ${v.artnr}: ${q.title}${v.label ? ' | ' + v.label : ''}`))].slice(0, maxRows + 4).join('\n');
+    }
+    if (seg[0] === 'artikel' && byArt[seg[1]]) {
+      const e = byArt[seg[1]];
+      return [`Catalogus: Transportkoeling`, `- ${seg[1]}: ${e[0].item ? e[0].item.name + (e[0].item.brand ? ' | ' + e[0].item.brand : '') : ''}`,
+        `Zit in pakketten: ${e.filter((x) => x.pkg).map((x) => `${x.pkg.type} ${x.pkg.artnr} (${x.pkg.fitsText})`).join('; ')}`].join('\n');
+    }
+    return null;
+  }
+  // Bestaat dit WH-artikelnummer echt in de catalogi? Zo ja: titel, link en afbeelding.
+  function artLookup(a) {
+    const e = byArt[a];
+    if (e && e.length) {
+      const x = e[0];
+      if (x.kind === 'part') return { title: x.part.title, sub: [x.variant.label, x.variant.note].filter(Boolean).join(' · '), kind: 'Transportkoeling', href: `#/onderdeel/${enc(x.part.id)}`, img: x.part.img };
+      if (x.kind === 'package') return { title: `${x.pkg.type} ${x.pkg.artnr}`, sub: x.pkg.fitsText, kind: 'Transportkoeling', href: `#/pakket/${enc(x.pkg.id)}`, img: x.pkg.img };
+      return { title: x.item.name, sub: x.item.brand || '', kind: 'Transportkoeling', href: `#/artikel/${enc(a)}`, img: x.item.img };
+    }
+    return window.CAT.artLookup(a);
+  }
+
   /* ---------- router ---------- */
   function route() {
     const hash = location.hash.replace(/^#\/?/, '');
@@ -440,6 +482,7 @@
       case 'onderdelen': pageParts(seg[1]); break;
       case 'koudemiddel': pageRefrigerant(params.get('f') || ''); break;
       case 'zoek': pageSearch(params.get('q') || ''); break;
+      case 'foto': if (window.FOTO) window.FOTO.page(); else pageNotFound(); break;
       default: pageNotFound();
     }
     if (seg[0] !== 'zoek') searchInput.value = '';
@@ -489,7 +532,7 @@
   }
 
   // gedeelde hulpfuncties voor de catalogusmodule (catalogi.js)
-  window.TKH = { esc, enc, norm, compact, natural, img, copyBtn, webshopLink, setCrumbs, mark, app, ICON, notFound: () => pageNotFound() };
+  window.TKH = { esc, enc, norm, compact, natural, img, copyBtn, webshopLink, setCrumbs, mark, app, ICON, toast, search, detailText, artLookup, notFound: () => pageNotFound() };
 
   window.addEventListener('hashchange', route);
   const V = (document.querySelector('script[src*="app.js"]').src.split('v=')[1] || '');

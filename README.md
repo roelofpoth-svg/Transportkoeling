@@ -108,6 +108,31 @@ Elke pagina heeft een eigen link die je kunt delen of in de webshop kunt plaatse
 - `#/trailer/...` – oude trailerbouwlinks blijven werken
 - `#/koeling` – startpagina transportkoeling
 
+## Foto-zoeker (binnendienst)
+
+Chatvenster rechtsonder waarin medewerkers foto's (ook WhatsApp-screenshots) en info kwijt kunnen. Claude leest de foto's (typeplaatjes, nummers, maten), zoekt zelf in alle catalogi van deze tool en geeft de beste WH-artikelnummers met zekerheid (zeker / waarschijnlijk / mogelijk), met links naar de tool en de webshop. Je kunt in hetzelfde gesprek doorvragen ("onderpot is 150 mm hoog").
+
+- **Alleen voor medewerkers.** Het rondje is onzichtbaar voor klanten. Een medewerker opent één keer `…/WijlhuizenOnderdelenzoeker/#/foto`, vult de toegangscode in, en ziet daarna in die browser altijd het rondje rechtsonder.
+- **Controle op verzonnen nummers.** Elk artikelnummer dat Claude noemt wordt in de catalogusdata opgezocht; staat het er niet in, dan krijgt de kaart een rode waarschuwing.
+- **Foto's** worden in de browser verkleind (max. 1568 px) en niet opgeslagen.
+
+### Zo zet je het aan (eenmalig, ±20 minuten)
+
+1. **Anthropic API-sleutel**: maak een account op https://console.anthropic.com, zet er tegoed op en maak een API-sleutel aan.
+2. **Cloudflare Worker** (gratis): maak een account op https://dash.cloudflare.com. Dan, in de map `worker/`:
+   ```
+   npx wrangler login
+   npx wrangler secret put ANTHROPIC_API_KEY      # plak de API-sleutel
+   npx wrangler secret put TOEGANGSCODES          # bijv. een code voor de binnendienst (meerdere: komma-gescheiden)
+   npx wrangler deploy
+   ```
+   Wrangler toont het adres, bijv. `https://wijlhuizen-fotozoeker.<naam>.workers.dev`.
+3. Vul dat adres in bij `fotoZoekerApi` in `config.js` en push.
+
+Instellingen in `worker/wrangler.toml`: `TOEGESTANE_ORIGINS` (welke website het venster mag gebruiken) en `MODEL` (welk Claude-model). Code intrekken = `TOEGANGSCODES` aanpassen en opnieuw `wrangler deploy`. De werkinstructie voor Claude staat bovenin `worker/fotozoeker-worker.js`.
+
+Zo werkt het technisch: de browser stuurt foto's en tekst naar de Worker; de Worker voegt de API-sleutel en de werkinstructie toe en stuurt het door naar Claude. Wil Claude zoeken, dan voert de browser die zoekopdracht uit in de catalogusdata en stuurt het resultaat terug, tot Claude een eindantwoord geeft.
+
 ## Hosten
 
 Het is een statische site (HTML/CSS/JS + `data/catalogus.json`), zonder server of build-stap.

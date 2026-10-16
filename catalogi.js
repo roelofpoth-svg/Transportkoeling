@@ -224,6 +224,31 @@
     return res;
   }
 
+
+  /* ---------- voor de Foto-zoeker: details als tekst + artikelnummer opzoeken ---------- */
+  function productText(cid, pid, maxRows) {
+    const c = CATS[cid], m = meta(cid);
+    const p = c && c.prods[pid];
+    if (!p) return null;
+    const out = [`Catalogus: ${m.name}`, `Groep: ${p._path.join(' › ')}`, `Titel: ${p.title}${p.lijn ? ' (' + p.lijn + ')' : ''}`];
+    let n = 0;
+    p.tables.forEach((t, ti) => {
+      out.push(`Tabel ${ti + 1} — kolommen: ${t.cols.length ? t.cols.join(' | ') : '(geen)'} | WH-art.nr.`);
+      t.rows.forEach((r) => { if (n++ < maxRows) out.push(`- ${r.a}: ${r.c.map((x) => x || '–').join(' | ')}${r.s ? ' (' + r.s + ')' : ''}`); });
+      t.notes.forEach((x) => out.push(`  Opmerking: ${x}`));
+    });
+    if (n > maxRows) out.push(`(… nog ${n - maxRows} regels niet getoond)`);
+    return out.join('\n');
+  }
+  function artLookup(a) {
+    for (const m of INDEX) {
+      const c = CATS[m.id];
+      const hit = c && c.byArt[a];
+      if (hit && hit.length) { const { p, r } = hit[0]; return { title: p.title, sub: r.c.filter(Boolean).join(' · ').replace(/ \| /g, ' '), kind: m.name, href: prodUrl(m.id, p, a), img: r.i || p.img[0] }; }
+    }
+    return null;
+  }
+
   /* ---------- router ---------- */
   function route(seg, params) {
     const { app } = H0();
@@ -255,5 +280,5 @@
     });
   }
 
-  window.CAT = { init, route, legacyTrailer, load, ensureAll, searchLoaded, index: () => INDEX, isLoaded: () => INDEX.every((c) => CATS[c.id]) };
+  window.CAT = { init, route, legacyTrailer, load, ensureAll, searchLoaded, productText, artLookup, index: () => INDEX, isLoaded: () => INDEX.every((c) => CATS[c.id]) };
 })();

@@ -1,0 +1,14 @@
+# Cloudflare Worker voor de Foto-zoeker. Zie README, kopje "Foto-zoeker".
+name = "wijlhuizen-fotozoeker"
+main = "fotozoeker-worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+# Welke websites de Foto-zoeker mogen gebruiken (komma-gescheiden)
+TOEGESTANE_ORIGINS = "https://roelofpoth-svg.github.io"
+# Claude-model; desgewenst aanpassen
+MODEL = "claude-opus-5-5"
+
+# Geheimen (niet hier invullen, maar met wrangler):
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   npx wrangler secret put TOEGANGSCODES      (één of meer codes, komma-gescheiden)

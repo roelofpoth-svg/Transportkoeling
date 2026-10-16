@@ -4,4 +4,8 @@ window.TK_CONFIG = {
   webshopLabel: 'Bekijk in webshop',
   // Link openen in nieuw tabblad (aan te raden wanneer de tool in een iframe staat)
   webshopNewTab: true,
+  // Foto-zoeker (binnendienst): adres van de eigen server (Cloudflare Worker), zie README. Leeg = uit.
+  fotoZoekerApi: '',
+  // Het chat-rondje alleen tonen aan medewerkers die de toegangscode hebben ingevuld (via #/foto). true = altijd tonen.
+  fotoZoekerAltijdTonen: false,
 };
