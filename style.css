@@ -366,8 +366,6 @@ body.embedded .fz { right: 12px; bottom: 12px; }
 .fz-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); animation: fzp 1s infinite alternate; margin-right: 4px; }
 @keyframes fzp { from { opacity: .25; } to { opacity: 1; } }
 .fz-err { color: var(--red-dark); }
-.fz-code { display: flex; gap: 6px; margin-top: 6px; }
-.fz-code input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
 .fz-cands { display: grid; gap: 8px; margin: 8px 0; }
 .fz-cand { display: grid; grid-template-columns: 64px 1fr; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 8px; background: #fff; }
 .fz-cand.unknown { border-color: #f0b4b5; background: #fff7f7; }

@@ -6,6 +6,6 @@ window.TK_CONFIG = {
   webshopNewTab: true,
   // Foto-zoeker (binnendienst): adres van de eigen server (Cloudflare Worker), zie README. Leeg = uit.
   fotoZoekerApi: 'https://wijlhuizen-chatbot.roelofpoth.workers.dev',
-  // Het chat-rondje alleen tonen aan medewerkers die de toegangscode hebben ingevuld (via #/foto). true = altijd tonen.
-  fotoZoekerAltijdTonen: false,
+  // Het chat-rondje rechtsonder tonen. false = verbergen (dan alleen te openen via #/foto).
+  fotoZoekerTonen: true,
 };

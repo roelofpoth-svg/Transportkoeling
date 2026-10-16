@@ -1,6 +1,6 @@
 /* Foto-zoeker server (Cloudflare Worker).
  * - bewaart de Anthropic API-sleutel (geheim, komt nooit in de browser)
- * - laat alleen medewerkers met een geldige toegangscode door
+ * - optioneel: alleen met toegangscode (zet TOEGANGSCODES; leeg/niet gezet = open voor iedereen)
  * - geeft Claude de werkinstructie en het gereedschap; het zoeken zelf gebeurt in de browser
  *   (in de catalogusdata van de Onderdelenzoeker), de browser stuurt de zoekresultaten terug. */
 
@@ -79,7 +79,7 @@ export default {
 
     const codes = String(env.TOEGANGSCODES || '').split(',').map((s) => s.trim()).filter(Boolean);
     const code = request.headers.get('x-toegangscode') || '';
-    if (!codes.length || !codes.includes(code)) return json({ error: 'toegangscode klopt niet' }, 401);
+    if (codes.length && !codes.includes(code)) return json({ error: 'toegangscode klopt niet' }, 401);
     if (!env.ANTHROPIC_API_KEY) return json({ error: 'server mist ANTHROPIC_API_KEY' }, 500);
 
     if (Number(request.headers.get('content-length') || 0) > MAX_BODY) return json({ error: 'te groot, stuur minder foto’s' }, 413);

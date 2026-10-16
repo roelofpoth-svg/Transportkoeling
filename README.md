@@ -112,7 +112,7 @@ Elke pagina heeft een eigen link die je kunt delen of in de webshop kunt plaatse
 
 Chatvenster rechtsonder waarin medewerkers foto's (ook WhatsApp-screenshots) en info kwijt kunnen. Claude leest de foto's (typeplaatjes, nummers, maten), zoekt zelf in alle catalogi van deze tool en geeft de beste WH-artikelnummers met zekerheid (zeker / waarschijnlijk / mogelijk), met links naar de tool en de webshop. Je kunt in hetzelfde gesprek doorvragen ("onderpot is 150 mm hoog").
 
-- **Alleen voor medewerkers.** Het rondje is onzichtbaar voor klanten. Een medewerker opent één keer `…/WijlhuizenOnderdelenzoeker/#/foto`, vult de toegangscode in, en ziet daarna in die browser altijd het rondje rechtsonder.
+- **Voorlopig open voor iedereen** (de tool is nog intern/test). Rondje verbergen: `fotoZoekerTonen: false` in `config.js` (openen kan dan nog via `#/foto`). Toegangscode weer aanzetten: zet `TOEGANGSCODES` als Secret in Cloudflare; de browser vraagt daar nu niet om, dat moet dan opnieuw ingebouwd worden.
 - **Controle op verzonnen nummers.** Elk artikelnummer dat Claude noemt wordt in de catalogusdata opgezocht; staat het er niet in, dan krijgt de kaart een rode waarschuwing.
 - **Foto's** worden in de browser verkleind (max. 1568 px) en niet opgeslagen.
 
@@ -123,13 +123,12 @@ Chatvenster rechtsonder waarin medewerkers foto's (ook WhatsApp-screenshots) en 
    ```
    npx wrangler login
    npx wrangler secret put ANTHROPIC_API_KEY      # plak de API-sleutel
-   npx wrangler secret put TOEGANGSCODES          # bijv. een code voor de binnendienst (meerdere: komma-gescheiden)
    npx wrangler deploy
    ```
    Wrangler toont het adres, bijv. `https://wijlhuizen-fotozoeker.<naam>.workers.dev`.
 3. Vul dat adres in bij `fotoZoekerApi` in `config.js` en push.
 
-Instellingen in `worker/wrangler.toml`: `TOEGESTANE_ORIGINS` (welke website het venster mag gebruiken) en `MODEL` (welk Claude-model). Code intrekken = `TOEGANGSCODES` aanpassen en opnieuw `wrangler deploy`. De werkinstructie voor Claude staat bovenin `worker/fotozoeker-worker.js`.
+Instellingen in `worker/wrangler.toml`: `TOEGESTANE_ORIGINS` (welke website het venster mag gebruiken) en `MODEL` (welk Claude-model). De werkinstructie voor Claude staat bovenin `worker/fotozoeker-worker.js`.
 
 Zo werkt het technisch: de browser stuurt foto's en tekst naar de Worker; de Worker voegt de API-sleutel en de werkinstructie toe en stuurt het door naar Claude. Wil Claude zoeken, dan voert de browser die zoekopdracht uit in de catalogusdata en stuurt het resultaat terug, tot Claude een eindantwoord geeft.
 

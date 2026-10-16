@@ -1,19 +1,13 @@
 /* Foto-zoeker voor de binnendienst: chatvenster rechtsonder waarin je foto's en info gooit.
  * Claude kijkt naar de foto's en zoekt zelf in de catalogi van deze tool (zoeken gebeurt hier in de browser).
  * De verbinding met Claude loopt via een kleine eigen server (worker/fotozoeker-worker.js) die de API-sleutel
- * bewaart en de toegangscode van medewerkers controleert. Zie README, kopje "Foto-zoeker". */
+ * bewaart. Zie README, kopje "Foto-zoeker". */
 (function () {
   'use strict';
   const CFG = window.TK_CONFIG || {};
   const API = (CFG.fotoZoekerApi || '').replace(/\/$/, '');
-  const KEY = 'wh-fotozoeker-code';
   const MAX_FOTOS = 6, MAX_PX = 1568, MAX_STAPPEN = 14;
   const H = () => window.TKH;
-
-  const store = {
-    get() { try { return localStorage.getItem(KEY) || ''; } catch (_) { return ''; } },
-    set(v) { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch (_) { /* privévenster */ } },
-  };
 
   let root, list, form, txt, fileIn, thumbs, sendBtn;
   let pending = [];      // foto's die nog verstuurd moeten worden: {data, type, url}
@@ -91,30 +85,14 @@
   function greet() {
     list.innerHTML = '';
     if (!API) return bot(`<p><b>Nog niet gekoppeld.</b> De Foto-zoeker heeft een eigen server met een Anthropic API-sleutel nodig. Zie de README (kopje “Foto-zoeker”) en vul daarna <code>fotoZoekerApi</code> in <code>config.js</code> in.</p>`);
-    if (!store.get()) return askCode();
     bot(`<p>Stuur een of meer foto's van het onderdeel (typeplaatje, nummers, het hele deel) en zet erbij wat je weet: merk, waar het zit, maten. Ik zoek het op in de catalogi.</p>`);
-  }
-
-  function askCode(msg) {
-    const el = bot(`<p>${msg || 'Alleen voor medewerkers. Vul de toegangscode in.'}</p>
-      <form class="fz-code"><input type="password" autocomplete="current-password" placeholder="Toegangscode" aria-label="Toegangscode"><button class="btn small" type="submit">Opslaan</button></form>`);
-    const f = el.querySelector('form');
-    f.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const v = f.querySelector('input').value.trim();
-      if (!v) return;
-      store.set(v);
-      showLauncher();
-      greet();
-    });
-    setTimeout(() => f.querySelector('input').focus(), 30);
   }
 
   function toggle(open) {
     build();
     root.classList.toggle('open', open);
     root.querySelector('.fz-panel').hidden = !open;
-    if (open) setTimeout(() => (root.querySelector('.fz-code input') || txt).focus(), 30);
+    if (open) setTimeout(() => txt.focus(), 30);
   }
   function showLauncher() { build(); root.classList.add('on'); }
 
@@ -184,8 +162,6 @@
   /* ---------- versturen + gesprekslus ---------- */
   async function send() {
     if (busy || !API) return;
-    const code = store.get();
-    if (!code) return askCode();
     const text = txt.value.trim();
     if (!text && !pending.length) return;
     const { esc } = H();
@@ -202,7 +178,7 @@
     try {
       if (window.CAT && !window.CAT.isLoaded()) await window.CAT.ensureAll();
       for (let i = 0; i < MAX_STAPPEN; i++) {
-        const resp = await callApi(code, messages);
+        const resp = await callApi(messages);
         messages.push({ role: 'assistant', content: resp.content });
         const uses = resp.content.filter((b) => b.type === 'tool_use');
         const final = uses.find((u) => u.name === 'geef_resultaat');
@@ -233,8 +209,7 @@
       // het onbeantwoorde bericht weer uit het gesprek halen zodat opnieuw proberen kan
       while (messages.length && messages[messages.length - 1].role !== 'user') messages.pop();
       messages = trimToLastComplete(messages);
-      if (e.status === 401) { store.set(''); askCode('Toegangscode klopt niet. Probeer opnieuw.'); }
-      else bot(`<p class="fz-err">Er ging iets mis: ${esc(e.message)}. Probeer het opnieuw.</p>`);
+      bot(`<p class="fz-err">Er ging iets mis: ${esc(e.message)}. Probeer het opnieuw.</p>`);
     } finally {
       busy = false; sendBtn.disabled = false;
     }
@@ -248,9 +223,9 @@
     return [];
   }
 
-  async function callApi(code, msgs) {
+  async function callApi(msgs) {
     const r = await fetch(`${API}/api/fotozoeker`, {
-      method: 'POST', headers: { 'content-type': 'application/json', 'x-toegangscode': code },
+      method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ messages: msgs }),
     });
     let j = null; try { j = await r.json(); } catch (_) { /* geen JSON */ }
@@ -286,7 +261,7 @@
 
   /* ---------- start ---------- */
   function page() {
-    // #/foto: medewerkers openen hiermee het venster (en vullen de code in); daarna blijft het rondje zichtbaar
+    // #/foto: opent direct het venster
     showLauncher();
     toggle(true);
     history.replaceState(null, '', '#/');
@@ -294,6 +269,8 @@
   }
 
   window.FOTO = { page, open: () => toggle(true) };
-  document.addEventListener('DOMContentLoaded', () => { if (store.get() || CFG.fotoZoekerAltijdTonen) showLauncher(); });
-  if (document.readyState !== 'loading' && (store.get() || CFG.fotoZoekerAltijdTonen)) setTimeout(showLauncher, 0);
+  // voorlopig voor iedereen zichtbaar (zet fotoZoekerTonen in config.js op false om het rondje te verbergen)
+  if (API && CFG.fotoZoekerTonen !== false) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showLauncher); else setTimeout(showLauncher, 0);
+  }
 })();
